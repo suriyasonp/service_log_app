@@ -17,5 +17,5 @@ class UserResponse(UserBase):
     created_on: datetime
     modified_on: datetime
 
-class Config:
-        orm_mode = True
+    class Config:
+            orm_mode = True
