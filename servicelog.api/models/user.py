@@ -7,7 +7,7 @@ from datetime import datetime
 class User(Base):
     __tablename__ = "users"  # Updated table name
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
-    name = Column(String, nullable=False)
+    username = Column(String, nullable=False)
     fullname = Column(String, nullable=False)
     email = Column(String, nullable=True)
     password = Column(String, nullable=False)
