@@ -24,4 +24,5 @@ To record a ticket from customer service.
   - bash: `python3 database/seed_default_data.py`
 
 ## Run API
-bash: `uvicorn main:app --reload`
+- bash: `uvicorn main:app --reload`
+- Access API Docs: url: `http://127.0.0.1:8000/docs`
