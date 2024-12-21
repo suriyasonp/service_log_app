@@ -1,7 +1,7 @@
 from passlib.context import CryptContext
 from sqlalchemy.orm import sessionmaker
 from models.user import User
-import db
+import database.db as db
 
 # Password hashing setup
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -24,7 +24,7 @@ def add_default_admin():
             # Add default admin
             admin = User(
                 username="admin", 
-                fullname="LTH Admin", 
+                fullname="Administrator", 
                 email="", 
                 password=hashed_password, 
                 is_admin=True)

@@ -1,7 +1,7 @@
 import uuid
 from sqlalchemy.dialects.postgresql import UUID  # Compatible with SQLite
 from sqlalchemy import Column, String, Boolean, DateTime
-from base import Base
+from database.base import Base
 from datetime import datetime
 
 class User(Base):
