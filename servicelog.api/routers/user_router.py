@@ -22,7 +22,7 @@ def get_db():
     finally:
         db.close()
 
-@router.post("/users/", response_model=UserResponse)
+@router.post("/create", response_model=UserResponse)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     logger.info(f"Creating user: {user.username}")
     db_user = db.query(User).filter(
