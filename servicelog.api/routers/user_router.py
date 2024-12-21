@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database.db import SessionLocal
@@ -22,7 +23,7 @@ def get_db():
     finally:
         db.close()
 
-@router.post("/create", response_model=UserResponse)
+@router.post("", response_model=UserResponse)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     logger.info(f"Creating user: {user.username}")
     db_user = db.query(User).filter(
@@ -52,3 +53,19 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail="An error occurred while creating the user.")
 
     return new_user
+
+@router.get("", response_model=List[UserResponse])
+def get_users(username: str = None, fullname: str = None, db: Session = Depends(get_db)):
+    query = db.query(User)
+    
+    try:
+        if username:
+            query = query.filter(User.username.ilike(f"%{username}%"))
+        if fullname:
+            query = query.filter(User.fullname.ilike(f"%{fullname}%"))
+        
+        users = query.all()
+    except Exception as e:
+        logger.error(f"Error retrieving users: {str(e)}")
+        raise HTTPException(status_code=500, detail="An error occurred while retrieving users.")
+    return users
