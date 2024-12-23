@@ -37,4 +37,5 @@ def add_default_admin():
     finally:
         session.close()
 
-add_default_admin()
+if __name__ == "__main__":
+    add_default_admin()
