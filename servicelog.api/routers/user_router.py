@@ -56,6 +56,16 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 
 @router.get("", response_model=List[UserResponse])
 def get_users(username: str = None, fullname: str = None, db: Session = Depends(get_db)):
+    
+    """_summary_ Retrive a list of all users or filter by username or fullname.
+
+    Raises:
+        HTTPException: _description_
+
+    Returns:
+        _type_: _description_
+    """
+    
     query = db.query(User)
     
     try:
