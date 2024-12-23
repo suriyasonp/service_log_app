@@ -19,9 +19,9 @@ To record a ticket from customer service.
 ## Setup project
 ### Setup database
 - Create database. 
-  - bash: `python3 database/db.py`
+  - bash: `python3 -m database.db`
 - Seed default data.
-  - bash: `python3 database/seed_default_data.py`
+  - bash: `python3 -m database.seed_default_data`
 
 ## Run API
 - bash: `uvicorn main:app --reload`
