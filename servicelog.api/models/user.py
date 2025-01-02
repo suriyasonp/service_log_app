@@ -12,5 +12,6 @@ class User(Base):
     email = Column(String, nullable=True)
     password = Column(String, nullable=False)
     is_admin = Column(Boolean, default=False)
+    is_active = Column(Boolean, default=True)
     created_on = Column(DateTime, default=datetime.utcnow)
     modified_on = Column(DateTime, default=datetime.utcnow)
