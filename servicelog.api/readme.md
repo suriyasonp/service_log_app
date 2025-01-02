@@ -17,6 +17,10 @@ To record a ticket from customer service.
 - Uvicon - web server for python
 
 ## Setup project
+### Generate requirements.txt
+- bash: `pip3 install pipreqs`
+- Run in current directory
+  - bash: `python3 -m  pipreqs.pipreqs .`
 ### Setup database
 - Create database. 
   - bash: `python3 -m database.db`
