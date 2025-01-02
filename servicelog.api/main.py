@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from routers import user_router  # Import your routers
+from routers import user_router
+from routers.auth_router import router as auth_router
 
 description = """
 ## Service Log API
@@ -30,6 +31,7 @@ app = FastAPI(
 )
 
 # Include routers
+app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
 app.include_router(user_router.router, prefix="/users", tags=["Users"])
 
 @app.get("/")
