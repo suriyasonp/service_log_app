@@ -20,8 +20,8 @@ class UserCreate(UserBase):
 class UserResponse(UserBase):
     id: UUID
     is_admin: bool
-    created_on: datetime
-    modified_on: datetime
+    created_on: Optional[datetime] = None
+    modified_on: Optional[datetime] = None
 
     class Config:
             orm_mode = True
