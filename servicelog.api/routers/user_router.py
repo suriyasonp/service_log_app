@@ -1,6 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from auth.authen import get_current_user, oauth2_scheme
 from database.db import SessionLocal
 from models.user import User
 from schemas.user_schema import UserCreate, UserResponse
@@ -24,7 +25,7 @@ def get_db():
         db.close()
 
 @router.post("", response_model=UserResponse)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
+def create_user(user: UserCreate, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
     logger.info(f"Creating user: {user.username}")
     db_user = db.query(User).filter(
         (User.username == user.username) | (User.email == user.email)
@@ -55,7 +56,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     return new_user
 
 @router.get("", response_model=List[UserResponse])
-def get_users(username: str = None, fullname: str = None, db: Session = Depends(get_db)):
+def get_users(username: str = None, fullname: str = None, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     
     """_summary_ Retrive a list of all users or filter by username or fullname.
 

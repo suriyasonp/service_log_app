@@ -1,9 +1,12 @@
 from datetime import datetime, timedelta
 from typing import Optional
 
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from fastapi.security import OAuth2PasswordBearer
+
+from schemas.login_schema import LoginResponse
 
 # Secret Key and Algorithm
 SECRET_KEY = "This-is-a-secret"
@@ -38,3 +41,24 @@ def decode_access_token(token: str):
         return payload
     except JWTError:
         return None
+    
+def get_current_user(token: str = Depends(oauth2_scheme)):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid authentication credentials",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        
+        logged_in_response = LoginResponse(id=payload.get("id"), username=payload.get("username"), access_token=token, loged_in_on=payload.get("loged_in_on"))
+        return {"username": username,
+                }  # Return other user data if needed
+    except JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
