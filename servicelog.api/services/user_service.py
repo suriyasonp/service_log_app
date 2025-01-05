@@ -1,7 +1,6 @@
 from http.client import HTTPException
 from schemas.user_schema import UserCreate
 from sqlalchemy.orm import Session
-from database.db import SessionLocal
 import logging
 
 from models.user import User
