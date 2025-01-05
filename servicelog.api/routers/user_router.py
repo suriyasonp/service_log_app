@@ -1,11 +1,11 @@
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from auth.authen import get_current_user, oauth2_scheme
+from fastapi import APIRouter, Depends, HTTPException # type: ignore
+from sqlalchemy.orm import Session # type: ignore
+from auth.authen import oauth2_scheme
 from database.db import SessionLocal
 from models.user import User
 from schemas.user_schema import UserCreate, UserResponse
-from passlib.context import CryptContext
+from passlib.context import CryptContext # type: ignore
 import logging
 
 logger = logging.getLogger(__name__)
