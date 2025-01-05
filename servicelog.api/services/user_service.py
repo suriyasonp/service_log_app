@@ -40,21 +40,31 @@ def query_users(db: Session, username: str = None, fullname: str = None, is_admi
     return users
 
 def create_new_user(db: Session, user: UserCreate):
-    db_user = db.query(User).filter(
-        (User.username == user.username) | (User.email == user.email) | (User.fullname == user.fullname)
-    ).first()
-    if db_user:
+    try:
+        db_user = db.query(User).filter(
+            (User.username == user.username) | (User.email == user.email) | (User.fullname == user.fullname)
+        ).first()
+        if db_user:
+            raise HTTPException(
+                status_code=400,
+                detail="This account has been already registered",
+            )
+        
+        new_user = User(
+            username=user.username,
+            fullname=user.fullname,
+            email=user.email, 
+            password=get_password_hash(user.password),
+            is_admin=False)
+        
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+    except Exception as e:
+        logger.error(f"Error creating user: {str(e)}")
         raise HTTPException(
-            status_code=400,
-            detail="This account has been already registered",
+            status_code=500,
+            detail="An error occurred while creating user." + str(e)
         )
-    new_user = User(
-        username=user.username, 
-        email=user.email, 
-        hashed_password=user.password,
-        fullname=user.fullname,
-        is_admin=False)
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+
     return new_user
