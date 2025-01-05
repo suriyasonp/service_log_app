@@ -23,7 +23,7 @@ def get_user(username: str, db: Session):
         )
     return user
 
-def get_users(db: Session, username: str = None, fullname: str = None, is_admin: bool = None):
+def query_users(db: Session, username: str = None, fullname: str = None, is_admin: bool = None):
     query = db.query(User)
 
     try:
