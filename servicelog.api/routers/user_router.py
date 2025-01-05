@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException # type: ignore
 from sqlalchemy.orm import Session # type: ignore
-from auth.authen import oauth2_scheme
+from services.authen_service import oauth2_scheme
 from database.db import SessionLocal
 from models.user import User
 from schemas.user_schema import UserCreate, UserResponse
