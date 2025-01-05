@@ -46,8 +46,8 @@ def create_new_user(db: Session, user: UserCreate):
         ).first()
         if db_user:
             raise HTTPException(
-                status_code=400,
-                detail="This account has been already registered",
+                400,
+                "This account has been already registered",
             )
         
         new_user = User(
@@ -63,8 +63,8 @@ def create_new_user(db: Session, user: UserCreate):
     except Exception as e:
         logger.error(f"Error creating user: {str(e)}")
         raise HTTPException(
-            status_code=500,
-            detail="An error occurred while creating user." + str(e)
+            500,  # Status code as the first positional argument
+            f"An error occurred while creating user: {str(e)}"  # Detail message as the second positional argument
         )
 
     return new_user
