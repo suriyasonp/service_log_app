@@ -3,8 +3,10 @@ from typing import Optional
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
+from schemas.user_schema import UserResponse
+from sqlalchemy.orm import Session
 from schemas.login_schema import LoginResponse
-from services.user_service import get_user, get_db
+from services.user_service import get_user
 
 # Secret Key and Algorithm
 SECRET_KEY = "This-is-a-secret"
@@ -27,37 +29,3 @@ def decode_access_token(token: str):
         return payload
     except JWTError:
         return None
-    
-def get_current_user(token: str = Depends(oauth2_scheme), db = Depends(get_db)):
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-
-        if username is None:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid authentication credentials",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-        
-        user = get_user(username, db)
-        if user is None:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid authentication credentials",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-        
-        return LoginResponse(
-            id=user.id,
-            username=user.username,
-            access_token=token,
-            token_type="bearer",
-            login_time=datetime.utcnow(),
-        )
-    except JWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authentication credentials",
-            headers={"WWW-Authenticate": "Bearer"},
-        )

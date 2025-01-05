@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from database.db import SessionLocal
 from models.user import User
-from auth.authen import create_access_token, get_current_user, oauth2_scheme
+from auth.authen import create_access_token, oauth2_scheme, decode_access_token
 from services.password_service import verify_password
 from schemas.login_schema import LoginResponse
 from schemas.user_schema import UserResponse
@@ -52,18 +52,26 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     )
 
 @router.get("/me")
-def read_users_me(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    user = get_current_user(token)
-    logged_on_user = get_user(user.get("username"), db)
+def read_users_me(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
 
-    if not logged_on_user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+    try:
+        user = decode_access_token(token).get("sub")
+        
+        logged_on_user = get_user(user, db)
+
+        if not logged_on_user:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+    except Exception as e:
+        logger.exception("An error occurred while retrieving user. Detail:")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An error occurred while retrieving user. "+ str(e),
+        )    
     return UserResponse(
         id=logged_on_user.id,
         username=logged_on_user.username,
         email=logged_on_user.email,
-        full_name=logged_on_user.full_name,
-        is_active=logged_on_user.is_active,
-        created_at=logged_on_user.created_at,
-        updated_at=logged_on_user.updated_at,
+        fullname=logged_on_user.fullname,
+        is_admin=logged_on_user.is_admin,
     )
+

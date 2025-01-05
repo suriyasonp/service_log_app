@@ -1,7 +1,6 @@
 from http.client import HTTPException
 from schemas.user_schema import UserCreate
 from sqlalchemy.orm import Session
-from fastapi import Depends
 from database.db import SessionLocal
 import logging
 
@@ -10,23 +9,21 @@ from services.password_service import get_password_hash
 
 logger = logging.getLogger(__name__)
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-def get_user_logging_in(username: str, password: str, db: Session = Depends(get_db)):
+def get_user_logging_in(username: str, password: str, db: Session):
     hashed_password = get_password_hash(password)
     user = db.query(User).filter(User.username == username and User.password == hashed_password).first()
     return user
 
-def get_user(username: str, db: Session = Depends(get_db)):
+def get_user(username: str, db: Session):
     user = db.query(User).filter(User.username == username).first()
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found",
+        )
     return user
 
-def get_users(db: Session = Depends(get_db), username: str = None, fullname: str = None, is_admin: bool = None):
+def get_users(db: Session, username: str = None, fullname: str = None, is_admin: bool = None):
     query = db.query(User)
 
     try:
