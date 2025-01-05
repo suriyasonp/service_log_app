@@ -1,6 +1,6 @@
 from http.client import HTTPException
 from schemas.user_schema import UserCreate
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session # type: ignore
 import logging
 
 from models.user import User
