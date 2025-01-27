@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from routers import user_router
 from routers.auth_router import router as auth_router
+from fastapi.middleware.cors import CORSMiddleware
 
 description = """
 ## Service Log API
@@ -28,6 +29,14 @@ app = FastAPI(
         "name": "Apache 2.0",
         "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
     },
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Include routers
